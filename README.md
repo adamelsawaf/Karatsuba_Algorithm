@@ -3,4 +3,4 @@ Implementation of the Karatsuba algorithm, a fast multiplication algorithm which
 
 Bash command to run this program (substitute non-negative integers for [INPUT1] and [INPUT2]):<br/>
 **g++ karatsuba.cpp -o karatsuba && ./karatsuba [INPUT1] [INPUT2]**<br/>
-which compiles the cpp file, creates an executable file called "karatsuba" in the directory, and runs that exectuable file.
+which compiles the cpp file, creates an executable file called "karatsuba" in this directory, and runs that exectuable file.
