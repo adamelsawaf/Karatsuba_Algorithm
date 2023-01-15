@@ -4,7 +4,7 @@
  *  Version     : 1.2
  *  Date        : 01/15/21
  *  Description : Implementation of the Karatsuba algorithm, a fast multiplication algorithm which multiplies
- *                two very large n-digit non-negative integers in time T(n) ∈ O(n ^ lg(3)) ≈ O(n ^ 1.585).
+ *                two very large n-digit non-negative integers in time O(n ^ lg(3)) ≈ O(n ^ 1.585).
  *                This program stores the given integers as strings, and so the program is able to calculate
  *                products containing up to over four million digits.
  *                
