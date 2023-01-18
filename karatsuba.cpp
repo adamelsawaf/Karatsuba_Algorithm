@@ -4,10 +4,10 @@
  *  Version     : 1.2
  *  Date        : 01/15/21
  *  Description : Implementation of the Karatsuba algorithm, a fast multiplication algorithm which multiplies
- *                two very large n-digit non-negative integers in time O(n^lg(3)) ≈ O(n^1.585), asymptotically
- *                faster than the naïve algorithm of time O(n^2). This program stores and performs calculations
- *                on the given integers as strings, and so the program is able to calculate products containing
- *                up to over four million digits.
+ *                two very large n-digit non-negative integers in time O(n ^ lg(3)) ≈ O(n ^ 1.585), asymptotically
+ *                faster than the naïve algorithm of time O(n^2). This program stores the given integers as strings,
+ *                and so the program is able to calculate products containing up to over four million digits. The
+ *                product and computation time are printed out to the console, for both the naïve and Karatsuba .
  *                
  *  Bash command to run this program (substitute non-negative integers for [INPUT1] and [INPUT2]):
 g++ karatsuba.cpp -o karatsuba && ./karatsuba [INPUT1] [INPUT2]
@@ -103,13 +103,13 @@ void setChar(string& str, const unsigned long long i, const string& c) {
 
 //  Adds two strings representing non-negative integers and returns their sum as a string.
 string add(const string& a, const string& b) {
-    string aPadded = a;
-    string bPadded = b;
+    string result       = "" ,
+           carry        = "0",
+           currentSum,
+           aPadded      = noLeadingZeros(a),
+           bPadded      = noLeadingZeros(b);
+           
     padZerosSameLength(aPadded, bPadded);
-
-    string result = "";
-    string carry = "0";
-    string currentSum;
     
     for(size_t i = aPadded.length() - 1; i >= 1; i--) {
         currentSum = numToString(stringToNum(aPadded.substr(i, 1)) + stringToNum(bPadded.substr(i, 1)) + stringToNum(carry));
@@ -119,7 +119,7 @@ string add(const string& a, const string& b) {
     }
     
     currentSum = numToString(stringToNum(aPadded.substr(0, 1)) + stringToNum(bPadded.substr(0, 1)) + stringToNum(carry));
-    result = currentSum + result;    
+    result     = currentSum + result;    
     
     return noLeadingZeros(result);
 }
@@ -128,11 +128,12 @@ string add(const string& a, const string& b) {
 //  Subtracts two strings representing non-negative integers and returns their difference as a string. This function
 //  assumes that the difference is non-negative, and will abort and throw an std::out_of_range exception otherwise.
 string subtract(const string& a, const string& b) {
-    string aPadded = a;
-    string bPadded = b;
-    padZerosSameLength(aPadded, bPadded);
+    string result  = "",
+           aPadded = noLeadingZeros(a),
+           bPadded = noLeadingZeros(b);
     
-    string result = "";
+    padZerosSameLength(aPadded, bPadded);
+
     int currentDigit_a, currentDigit_b, currentDifference, carrier;
     
     for(int i = aPadded.length() - 1; i >= 0; i--) {
@@ -161,11 +162,12 @@ string subtract(const string& a, const string& b) {
 //  function also works when the difference is negative, but is very slightly slower due to a few extra branches.
 //  (NOT USED for speed purposes)
 string subtractNegative(const string& a, const string& b) {
-    string aPadded = a;
-    string bPadded = b;
+    string result = "",
+           aPadded = noLeadingZeros(a),
+           bPadded = noLeadingZeros(b);
+
     padZerosSameLength(aPadded, bPadded);
     
-    string result = "";
     int currentDigit_a, currentDigit_b, currentDifference, carrier;
     
     for(int i = aPadded.length() - 1; i >= 0; i--) {
@@ -199,14 +201,45 @@ string subtractNegative(const string& a, const string& b) {
 
 //  Multiplies two strings representing integers and returns their product as a string, using repeated addition.
 //  (NOT USED for speed purposes)
-string multiply(const string& a, const string& b) {
-    string aNLZ = noLeadingZeros(a);
-    string result = "0";
+string multiply_repeatedAdditions(const string& a, const string& b) {
+    string aNLZ   = noLeadingZeros(a),
+           result = "0";
 
     for(unsigned long long i = 0; i < stringToNum(b); i++)
         result = add(result, aNLZ);
     
     return result;
+}
+
+
+//  Multiplies two strings representing integers and returns their product as a string, using the naive
+//  multiplication algorithm.
+string multiply_naive(const string& a, const string& b) {
+    string result          = "0",
+           carry           = "0",
+           ith_product     = "" ,
+           jth_product,
+           aPadded         = noLeadingZeros(a),
+           bPadded         = noLeadingZeros(b);
+
+    padZerosSameLength(aPadded, bPadded);
+
+    for(long long i = bPadded.length() - 1; i >= 0; i--) {
+        for(long long j = aPadded.length() - 1; j >= 1; j--) {
+            jth_product = numToString((stringToNum(aPadded.substr(j, 1)) * stringToNum(bPadded.substr(i, 1)))   +   stringToNum(carry));
+            jth_product = padZeros(jth_product, 2 - jth_product.length());
+            ith_product = jth_product[1] + ith_product;
+            carry       = jth_product[0];
+        }
+
+        result      = add(result,
+                          leftShift(numToString((stringToNum(aPadded.substr(0, 1)) * stringToNum(bPadded.substr(i, 1)))   +   stringToNum(carry))   +   ith_product,
+                                    aPadded.length() - 1 - i));
+        ith_product = "";
+        carry       = "0";
+    }
+
+    return noLeadingZeros(result);
 }
 
 
@@ -228,13 +261,13 @@ string karatsuba(const string& a, const string& b) {
         padZerosSameLength(aPadded, bPadded);
 
         unsigned long long n = aPadded.length();
-        string a1 = aPadded.substr(0, (aPadded.length() / 2) + (aPadded.length() % 2));  //  left  half of aPadded
-        string a0 = aPadded.substr((aPadded.length() / 2) + (aPadded.length() % 2));     //  right half of aPadded
-        string b1 = bPadded.substr(0, (bPadded.length() / 2) + (bPadded.length() % 2));  //  left  half of bPadded
-        string b0 = bPadded.substr((bPadded.length() / 2) + (bPadded.length() % 2));     //  right half of bPadded
-        string c0 = karatsuba(a0, b0);
-        //  c1 = (a1 + a0)(b1 + b0)      (is only referenced once)
-        string c2 = karatsuba(a1, b1);
+        const string a1 = aPadded.substr(0, (aPadded.length() / 2) + (aPadded.length() % 2)),  //  left  half of aPadded
+                     a0 = aPadded.substr((aPadded.length() / 2) + (aPadded.length() % 2)),     //  right half of aPadded
+                     b1 = bPadded.substr(0, (bPadded.length() / 2) + (bPadded.length() % 2)),  //  left  half of bPadded
+                     b0 = bPadded.substr((bPadded.length() / 2) + (bPadded.length() % 2)),     //  right half of bPadded
+                     c0 = karatsuba(a0, b0),
+                //   c1 = (a1 + a0)(b1 + b0),      (is only referenced once)
+                     c2 = karatsuba(a1, b1);
         
         //  a * b = (c2 * B^n) + ((c1 - c2 - c0) * B^(n / 2)) + c0.
         return add(add(leftShift(c2, n), leftShift(subtract(subtract(karatsuba(add(a1, a0), add(b1, b0)), c2), c0), n / 2)), c0);
@@ -258,45 +291,22 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     else {
-        string input1 = argv[1];
-        string input2 = argv[2];
+        const string input1 = argv[1],
+                     input2 = argv[2];
             
         auto start = high_resolution_clock::now();
         karatsuba(input1, input2);
         auto stop = high_resolution_clock::now();
         auto karatsuba_time = duration_cast<microseconds>(stop - start);
-        string karatsubaResult = karatsuba(input1, input2);
+        const string karatsubaResult = karatsuba(input1, input2);
         cout << input1 + " * " + input2 + " =\n" + karatsubaResult +
             "\n\nKaratsuba computation time: " << karatsuba_time.count() << " microsecond" << ((karatsuba_time.count() != 1) ? "s" : "") << "." << endl;
 
-
-        /*
-            The following compares the speed of the karatsuba multiplication to the naive multiplication, but due
-            to the optimized evaluations of C++, the naive multiplication turns out being much faster than Karatsuba
-            for all numbers that can fit in a numerical data type of C++, the largest being a long long. Karatsuba
-            is only asymptotically faster than naive multiplication.
-        */
-
-        // unsigned long long num1 = stringToNum(input1),  
-        //                    num2 = stringToNum(input2),
-        //                    naiveResult = num1 * num2;
-
-        // if(strcmp(numToString(naiveResult).c_str(), karatsubaResult.c_str()))
-        //     cout << "Naive calculation time: Overflow error, product too large." << endl;
-        // else {
-        //     start = high_resolution_clock::now();
-        //     num1 * num2;
-        //     stop = high_resolution_clock::now();
-        //     auto naive_time = duration_cast<microseconds>(stop - start);
-        //     cout << "Naive calculation time: " << naive_time.count() << " microsecond" << ((naive_time.count() != 1) ? "s" : "") << "." << endl;
-        //     long long time_difference = karatsuba_time.count() - naive_time.count();
-        //     if(time_difference < 0)
-        //         cout << "Karatsuba computed the multiplication " << time_difference << " microsecond" << ((time_difference != -1) ? "s" : "") << " faster than the naive multiplication." << endl;
-        //     else if(time_difference > 0)
-        //         cout << "Karatsuba computed the multiplication " << abs(time_difference) << " microsecond" << ((time_difference != 1) ? "s" : "") << " slower than the naive multiplication." << endl;
-        //     else
-        //         cout << "Karatsuba computed the multiplication in exactly the same time as the naive multiplication." << endl;
-        // }
+        start = high_resolution_clock::now();
+        multiply_naive(input1, input2);
+        stop = high_resolution_clock::now();
+        auto naive_time = duration_cast<microseconds>(stop - start);
+        cout << "Naive calculation time: " << naive_time.count() << " microsecond" << ((naive_time.count() != 1) ? "s" : "") << "." << endl;
 
         return 0;
     }
