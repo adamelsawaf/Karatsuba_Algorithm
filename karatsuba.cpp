@@ -16,6 +16,7 @@ g++ karatsuba.cpp -o karatsuba && ./karatsuba [INPUT1] [INPUT2]
 #include <string.h>               //  string type, strcmp()
 #include <sstream>                //  stringstream type
 #include <iostream>               //  cout output stream
+#include <iomanip>                //  setw()
 using namespace std;
 
 #include <math.h>                 //  log2(), floor(), ceil(), abs()
@@ -298,15 +299,18 @@ int main(int argc, char *argv[]) {
         karatsuba(input1, input2);
         auto stop = high_resolution_clock::now();
         auto karatsuba_time = duration_cast<microseconds>(stop - start);
-        const string karatsubaResult = karatsuba(input1, input2);
-        cout << input1 + " * " + input2 + " =\n" + karatsubaResult +
-            "\n\nKaratsuba computation time: " << karatsuba_time.count() << " microsecond" << ((karatsuba_time.count() != 1) ? "s" : "") << "." << endl;
 
         start = high_resolution_clock::now();
         multiply_naive(input1, input2);
         stop = high_resolution_clock::now();
         auto naive_time = duration_cast<microseconds>(stop - start);
-        cout << "Naive     computation time: " << naive_time.count() << " microsecond" << ((naive_time.count() != 1) ? "s" : "") << "." << endl;
+        
+        int displayWidth = max(numToString(karatsuba_time.count()).length(), numToString(naive_time.count()).length());
+            
+        cout << input1 + " * " + input2 + " =\n" + karatsuba(input1, input2) +
+            "\n\nKaratsuba computation time: " << setw(displayWidth) << karatsuba_time.count() << " microsecond" << ((karatsuba_time.count() != 1) ? "s" : "") << ".\n";
+
+        cout << "Naive     computation time: " << setw(displayWidth) << naive_time.count() << " microsecond" << ((naive_time.count() != 1) ? "s" : "") << "." << endl;
         return 0;
     }
 }
