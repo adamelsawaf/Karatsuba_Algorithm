@@ -284,11 +284,11 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     else if(!regex_match(argv[1], regex("^[0-9]+$"))) {
-        cerr << "\"" << argv[1] << "\" must only contain numbers 0-9." << endl;
+        cerr << "\"" << argv[1] << "\" must only contain digits 0-9." << endl;
         return 1;
     }
     else if(!regex_match(argv[2], regex("^[0-9]+$"))) {
-        cerr << "\"" << argv[2] << "\" must only contain numbers 0-9." << endl;
+        cerr << "\"" << argv[2] << "\" must only contain digits 0-9." << endl;
         return 1;
     }
     else {
