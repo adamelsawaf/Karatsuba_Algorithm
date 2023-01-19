@@ -203,8 +203,8 @@ string subtractNegative(const string& a, const string& b) {
 //  Multiplies two strings representing integers and returns their product as a string, using repeated addition.
 //  (NOT USED for speed purposes)
 string multiply_repeatedAdditions(const string& a, const string& b) {
-    string aNLZ   = noLeadingZeros(a),
-           result = "0";
+    const string aNLZ   = noLeadingZeros(a);
+          string result = "0";
 
     for(unsigned long long i = 0; i < stringToNum(b); i++)
         result = add(result, aNLZ);
@@ -298,19 +298,20 @@ int main(int argc, char *argv[]) {
         auto start = high_resolution_clock::now();
         karatsuba(input1, input2);
         auto stop = high_resolution_clock::now();
-        auto karatsuba_time = duration_cast<microseconds>(stop - start);
+        const auto karatsuba_time = duration_cast<microseconds>(stop - start);
 
         start = high_resolution_clock::now();
         multiply_naive(input1, input2);
         stop = high_resolution_clock::now();
-        auto naive_time = duration_cast<microseconds>(stop - start);
+        const auto naive_time = duration_cast<microseconds>(stop - start);
         
-        int displayWidth = max(numToString(karatsuba_time.count()).length(), numToString(naive_time.count()).length());
+        const int displayWidth = max(numToString(karatsuba_time.count()).length(), numToString(naive_time.count()).length());
             
         cout << input1 + " * " + input2 + " =\n" + karatsuba(input1, input2) +
             "\n\nKaratsuba computation time: " << setw(displayWidth) << karatsuba_time.count() << " microsecond" << ((karatsuba_time.count() != 1) ? "s" : "") << ".\n";
 
         cout << "Naive     computation time: " << setw(displayWidth) << naive_time.count() << " microsecond" << ((naive_time.count() != 1) ? "s" : "") << "." << endl;
+        
         return 0;
     }
 }
