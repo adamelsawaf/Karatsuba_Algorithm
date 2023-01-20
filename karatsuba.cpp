@@ -2,7 +2,7 @@
  *  Name        : karatsuba.cpp
  *  Author      : Adam El-Sawaf
  *  Version     : 1.3
- *  Date        : 01/18/21
+ *  Date        : 01/19/21
  *  Description : Implementation of the Karatsuba algorithm, a fast multiplication algorithm which multiplies
  *                two very large n-digit non-negative integers in time O(n ^ lg(3)) ≈ O(n ^ 1.585), asymptotically
  *                faster than the naïve algorithm of time O(n^2). This program stores the given integers as strings,
