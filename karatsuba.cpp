@@ -298,19 +298,19 @@ int main(int argc, char *argv[]) {
         auto start = high_resolution_clock::now();
         karatsuba(input1, input2);
         auto stop = high_resolution_clock::now();
-        const auto karatsuba_time = duration_cast<microseconds>(stop - start);
+        const auto karatsuba_time = duration_cast<microseconds>(stop - start).count();
 
         start = high_resolution_clock::now();
         multiply_naive(input1, input2);
         stop = high_resolution_clock::now();
-        const auto naive_time = duration_cast<microseconds>(stop - start);
+        const auto naive_time = duration_cast<microseconds>(stop - start).count();
         
-        const int displayWidth = max(numToString(karatsuba_time.count()).length(), numToString(naive_time.count()).length());
+        const int displayWidth = max(numToString(karatsuba_time).length(), numToString(naive_time).length());
             
         cout << input1 + " * " + input2 + " =\n" + karatsuba(input1, input2) +
-            "\n\nKaratsuba computation time: " << setw(displayWidth) << karatsuba_time.count() << " microsecond" << ((karatsuba_time.count() != 1) ? "s" : "") << ".\n";
+            "\n\nKaratsuba computation time: " << setw(displayWidth) << karatsuba_time << " microsecond" << ((karatsuba_time != 1) ? "s" : "") << ".\n";
 
-        cout << "Naive     computation time: " << setw(displayWidth) << naive_time.count() << " microsecond" << ((naive_time.count() != 1) ? "s" : "") << "." << endl;
+        cout << "Naive     computation time: " << setw(displayWidth) << naive_time << " microsecond" << ((naive_time != 1) ? "s" : "") << "." << endl;
         
         return 0;
     }
