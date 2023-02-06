@@ -5,4 +5,4 @@ The product and computation time are printed out to the console, for both the na
 
 Bash command to run this program (substitute non-negative integers for [INPUT1] and [INPUT2]):<br/>
 **g++ karatsuba.cpp -o karatsuba && ./karatsuba [INPUT1] [INPUT2]**<br/>
-which compiles the cpp file, creates an executable file called "karatsuba" in this directory, and runs that exectuable file.
+which compiles the cpp file, creates an executable file called "karatsuba" in this directory, and runs that executable file.
