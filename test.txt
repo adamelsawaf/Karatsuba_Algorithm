@@ -1,5 +1,5 @@
 Enter the command that is on the following line to test the Karatsuba algorithm. This test case multiplies a 13500-digit integer
-with itself, and so the multiplication is likely large enough (the max of the number of digits of both numbers being multiplied)
+with itself, and so the multiplication is likely large enough (the maximum of the number of digits of the two numbers being multiplied)
 for the Karatsuba algorithm to calculate the result faster than the traditional algorithm. This is because Karatsuba is asymptotically
 faster than the traditional algorithm, so Karatsuba is not usually faster for smaller multiplications, but for larger multiplications after
 some threshold, Karatsuba will become faster than the traditional algorithm. Note that the following command will take some time to complete running
