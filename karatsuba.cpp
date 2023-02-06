@@ -7,7 +7,7 @@
  *                two very large n-digit non-negative integers in time O(n ^ lg(3)) ≈ O(n ^ 1.585), asymptotically
  *                faster than the naïve algorithm of time O(n^2). This program stores the given integers as strings,
  *                and so the program is able to calculate products containing up to over four million digits. The
- *                product and computation time are printed out to the console, for both the naïve and Karatsuba .
+ *                product and computation time are printed out to the console, for both the naïve and Karatsuba algorithm.
  *                
  *  Bash command to run this program (substitute non-negative integers for [INPUT1] and [INPUT2]):
 g++ karatsuba.cpp -o karatsuba && ./karatsuba [INPUT1] [INPUT2]
