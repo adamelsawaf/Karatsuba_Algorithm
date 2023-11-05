@@ -1,8 +1,8 @@
 /*******************************************************************************
- *  Name        : karatsuba.cpp
+ *  File name   : karatsuba.cpp
  *  Author      : Adam El-Sawaf
- *  Version     : 1.3
- *  Date        : 01/19/21
+ *  Version     : 1.4
+ *  Date        : 11/04/21
  *  Description : Implementation of the Karatsuba algorithm, a fast multiplication algorithm which multiplies
  *                two very large n-digit non-negative integers in time O(n ^ lg(3)) ≈ O(n ^ 1.585), asymptotically
  *                faster than the naïve algorithm of time O(n^2). This program stores the given integers as strings,
@@ -10,8 +10,8 @@
  *                product and computation time are printed out to the console, for both the naïve and Karatsuba algorithm.
  *                
  *  Bash command to run this program (substitute non-negative integers for [INPUT1] and [INPUT2]):
-g++ karatsuba.cpp -o karatsuba && ./karatsuba [INPUT1] [INPUT2]
- *  which compiles the cpp file, creates an executable file called "karatsuba" in this directory, and runs that executable file.
+g++ karatsuba.cpp -o karatsuba && ./karatsuba [INPUT1] [INPUT2] && rm karatsuba
+ *  which compiles the cpp file, creates an executable file called "karatsuba" in this directory, runs that executable file, and deletes the executable file.
  ******************************************************************************/
 
 #include <string.h>               //  string type, strcmp()
@@ -50,24 +50,21 @@ string numToString(const unsigned long long num) {
 
 
 //  Returns a given string with a given number of "0"s prepended to it (this doesn't change
-//  the value of the string's integer representation).
+//  the value of the string's integer representation). (NOT USED for speed reasons)
 string padZeros(const string& s, const unsigned long long zeros) {
-    string result = s;
-    for(unsigned long long i = 0; i < zeros; i++)
-        result.insert(0, "0");
-    return result;
+    return string(zeros, '0') + s;
 }
 
 
-//  Prepends "0"s to a string so its length is an integer power of 2.
+//  Prepends "0"s to a string so its length is an integer power of 2. (NOT USED for speed purposes)
 string padZerosPowerTwo(const string& s) {
-    return s.empty() ? "" : padZeros(s, pow(2, ceil(log2(s.length()))) - s.length());
+    return s.empty() ? "" : string(pow(2, ceil(log2(s.length()))) - s.length(), '0') + s;
 }
 
 
 //  Pads zeros to two strings so they both have the same length.
 void padZerosSameLength(string& a, string& b) {
-    (a.length() >= b.length())   ?   (b = padZeros(b, a.length() - b.length()))    :   (a = padZeros(a, b.length() - a.length()));
+    (a.length() > b.length())   ?   (b = string(a.length() - b.length(), '0') + b)    :   (a = string(b.length() - a.length(), '0') + a);
 }
 
 
@@ -77,7 +74,7 @@ string noLeadingZeros(const string& s) {
     for(size_t i = 0; i < s.length(); i++) {
         if((s[i] != '0') || (i == s.length() - 1)) {
             result.append(s.substr(i));
-            break;
+            return result;
         }
     }
     return result;
@@ -115,15 +112,12 @@ string add(const string& a, const string& b) {
     
     for(size_t i = aPadded.length() - 1; i >= 1; i--) {
         currentSum = numToString(stringToNum(aPadded.substr(i, 1)) + stringToNum(bPadded.substr(i, 1)) + stringToNum(carry));
-        currentSum = padZeros(currentSum, 2 - currentSum.length());
+        currentSum = string(max(0, (int) (2 - currentSum.length())), '0') + currentSum;
         result     = currentSum.substr(1, 1) + result;
         carry      = currentSum.substr(0, 1);
     }
     
-    currentSum = numToString(stringToNum(aPadded.substr(0, 1)) + stringToNum(bPadded.substr(0, 1)) + stringToNum(carry));
-    result     = currentSum + result;    
-    
-    return noLeadingZeros(result);
+    return noLeadingZeros(numToString(stringToNum(aPadded.substr(0, 1)) + stringToNum(bPadded.substr(0, 1)) + stringToNum(carry)) + result);
 }
 
 
@@ -160,9 +154,11 @@ string subtract(const string& a, const string& b) {
 }
 
 
-//  Subtracts two strings representing non-negative integers and returns their difference as a string. This
-//  function also works when the difference is negative, but is very slightly slower due to a few extra branches.
-//  (NOT USED for speed purposes)
+/*
+    Subtracts two strings representing non-negative integers and returns their difference as a string. This
+    function also works when the difference is negative, but is very slightly slower due to a few extra branches.
+    (NOT USED for speed purposes)
+*/
 string subtractNegative(const string& a, const string& b) {
     string result = "",
            aPadded = noLeadingZeros(a),
@@ -204,12 +200,10 @@ string subtractNegative(const string& a, const string& b) {
 //  Multiplies two strings representing integers and returns their product as a string, using repeated addition.
 //  (NOT USED for speed purposes)
 string multiply_repeatedAdditions(const string& a, const string& b) {
-    const string aNLZ   = noLeadingZeros(a);
-          string result = "0";
-
+    const string aNLZ = noLeadingZeros(a);
+    string result = "0";
     for(unsigned long long i = 0; i < stringToNum(b); i++)
         result = add(result, aNLZ);
-    
     return result;
 }
 
@@ -229,14 +223,14 @@ string multiply_naive(const string& a, const string& b) {
     for(long long i = bPadded.length() - 1; i >= 0; i--) {
         for(long long j = aPadded.length() - 1; j >= 1; j--) {
             jth_product = numToString((stringToNum(aPadded.substr(j, 1)) * stringToNum(bPadded.substr(i, 1)))   +   stringToNum(carry));
-            jth_product = padZeros(jth_product, 2 - jth_product.length());
+            jth_product = string(max(0, (int) (2 - jth_product.length())), '0') + jth_product;
             ith_product = jth_product[1] + ith_product;
             carry       = jth_product[0];
         }
 
-        result      = add(result,
-                          leftShift(numToString((stringToNum(aPadded.substr(0, 1)) * stringToNum(bPadded.substr(i, 1)))   +   stringToNum(carry))   +   ith_product,
-                                    aPadded.length() - 1 - i));
+        result = add(result,
+                     leftShift(numToString((stringToNum(aPadded.substr(0, 1)) * stringToNum(bPadded.substr(i, 1)))   +   stringToNum(carry))   +   ith_product,
+                               aPadded.length() - 1 - i));
         ith_product = "";
         carry       = "0";
     }
@@ -256,13 +250,17 @@ string multiply_naive(const string& a, const string& b) {
 */
 string karatsuba(const string& a, const string& b) {
     if(noLeadingZeros(a).length() == 1 && noLeadingZeros(b).length() == 1)
-        return numToString(stringToNum(a) * stringToNum(b));      //  this is the base case (naive single-digit multiplication)
+        return numToString(stringToNum(a) * stringToNum(b));      //  this is the base case (naive two single-digits multiplication)
     else {
-        string aPadded = padZerosPowerTwo(a);
-        string bPadded = padZerosPowerTwo(b);
+        string aPadded = a,
+               bPadded = b;
         padZerosSameLength(aPadded, bPadded);
+        if(aPadded.length() % 2 != 0) {     //  pad a zero if they are odd length
+            aPadded = '0' + aPadded;
+            bPadded = '0' + bPadded;
+        }
 
-        unsigned long long n = aPadded.length();
+        const unsigned long long n = aPadded.length();
         const string a1 = aPadded.substr(0, (aPadded.length() / 2) + (aPadded.length() % 2)),  //  left  half of aPadded
                      a0 = aPadded.substr((aPadded.length() / 2) + (aPadded.length() % 2)),     //  right half of aPadded
                      b1 = bPadded.substr(0, (bPadded.length() / 2) + (bPadded.length() % 2)),  //  left  half of bPadded
@@ -308,10 +306,9 @@ int main(int argc, char *argv[]) {
         
         const int displayWidth = max(numToString(karatsuba_time).length(), numToString(naive_time).length());
             
-        cout << input1 + " * " + input2 + " =\n" + karatsuba(input1, input2) +
-            "\n\nKaratsuba computation time: " << setw(displayWidth) << karatsuba_time << " microsecond" << ((karatsuba_time != 1) ? "s" : "") << ".\n";
-
-        cout << "Naive     computation time: " << setw(displayWidth) << naive_time << " microsecond" << ((naive_time != 1) ? "s" : "") << "." << endl;
+        cout << input1 + " * " + input2 + " =\n" + karatsuba(input1, input2)
+             << "\n\nKaratsuba computation time: " << setw(displayWidth) << karatsuba_time << " microsecond" << ((karatsuba_time != 1) ? "s" : "")
+             << ".\nNaive     computation time: " << setw(displayWidth) << naive_time << " microsecond" << ((naive_time != 1) ? "s" : "") << "." << endl;
         
         return 0;
     }
