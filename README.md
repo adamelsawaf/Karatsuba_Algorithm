@@ -4,5 +4,5 @@ Implementation of the Karatsuba algorithm, a fast multiplication algorithm which
 The product and computation time are printed out to the console, for both the naïve and Karatsuba multiplications.
 
 Bash command to run this program (substitute non-negative integers for [INPUT1] and [INPUT2]):<br/>
-**g++ karatsuba.cpp -o karatsuba && ./karatsuba [INPUT1] [INPUT2]**<br/>
-which compiles the cpp file, creates an executable file called "karatsuba" in this directory, and runs that executable file.
+**g++ karatsuba.cpp -o karatsuba && ./karatsuba [INPUT1] [INPUT2] && rm karatsuba**<br/>
+which compiles the cpp file, creates an executable file called "karatsuba" in this directory, runs that executable file, and deletes the executable file.
