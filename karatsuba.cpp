@@ -277,7 +277,7 @@ string karatsuba(const string& a, const string& b) {
 
 //  The main program, which runs the Karatsuba Algorithm based on inputs from the
 //  console, and prints out its result of the mulitplication back to the console.
-int main(int argc, char *argv[]) {
+int main(const int argc, const char *argv[]) {
     if(argc != 3) {
         cerr << "Usage:\n" << argv[0] << " [INPUT1] [INPUT2]\n\nwhich calculates the product of the non-negative integers [INPUT1] and [INPUT2]." << endl;
         return 1;
@@ -291,8 +291,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     else {
-        const string input1 = argv[1],
-                     input2 = argv[2];
+        const string input1 = noLeadingZeros(argv[1]),
+                     input2 = noLeadingZeros(argv[2]);
             
         auto start = high_resolution_clock::now();
         karatsuba(input1, input2);
