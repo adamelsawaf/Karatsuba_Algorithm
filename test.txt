@@ -2,7 +2,7 @@ Enter the command that is on the following line to test the Karatsuba algorithm.
 with itself, and so the multiplication is likely large enough (the maximum of the number of digits of the two numbers being multiplied)
 for the Karatsuba algorithm to calculate the result faster than the naïve algorithm. This is because Karatsuba is asymptotically
 faster than the naïve algorithm, so Karatsuba is not usually faster for smaller multiplications, but for larger multiplications after
-some threshold, Karatsuba will become faster than the naïve algorithm. Note that the following command will take some time to complete running
+some threshold, Karatsuba will become always faster than the naïve algorithm. Note that the following command will take some time to complete running
 (around 30-60 minutes), depending on the hardware of your device. Plugging in your device and maximizing its performance settings while this command
 is running is highly recommended to speed up the multiplication.
 
