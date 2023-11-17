@@ -261,10 +261,10 @@ string karatsuba(const string& a, const string& b) {
         }
 
         const unsigned long long n = aPadded.length();
-        const string a1 = aPadded.substr(0, aPadded.length() / 2),  //  left  half of aPadded
-                     a0 = aPadded.substr(aPadded.length() / 2),     //  right half of aPadded
-                     b1 = bPadded.substr(0, bPadded.length() / 2),  //  left  half of bPadded
-                     b0 = bPadded.substr(bPadded.length() / 2),     //  right half of bPadded
+        const string a1 = aPadded.substr(0, n / 2),  //  left  half of aPadded
+                     a0 = aPadded.substr(n / 2),     //  right half of aPadded
+                     b1 = bPadded.substr(0, n / 2),  //  left  half of bPadded
+                     b0 = bPadded.substr(n / 2),     //  right half of bPadded
                      c0 = karatsuba(a0, b0),
                 //   c1 = (a1 + a0)(b1 + b0),      (is only referenced once)
                      c2 = karatsuba(a1, b1);
