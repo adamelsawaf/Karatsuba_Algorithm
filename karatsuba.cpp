@@ -94,8 +94,8 @@ string charAt(const string& s, const unsigned long long i) {
 }
 
 
-//  Sets the ith character of a string to given string. (NOT USED for speed purposes)
-void setChar(string& str, const unsigned long long i, const string& c) {
+//  Replaces the ith character of a string to given string. (NOT USED for speed purposes)
+void replaceChar(string& str, const unsigned long long i, const string& c) {
     str = str.substr(0, i) + c + str.substr(i + 1, str.length() - 1 - i);
 }
 
@@ -306,17 +306,14 @@ int main(const int argc, const char *argv[]) {
     //     cerr << "\"" << argv[2] << "\" must only contain digits 0-9." << endl;
     //     return 1;
     // }
-    else {
-        const string input1 = argv[1],
-                     input2 = argv[2];
-            
+    else {  
         auto start = high_resolution_clock::now();
-        const string karatsuba_result = karatsuba(input1, input2);
+        const string karatsuba_result = karatsuba(argv[1], argv[2]);
         auto stop = high_resolution_clock::now();
         const auto karatsuba_time = duration_cast<microseconds>(stop - start).count();
 
         start = high_resolution_clock::now();
-        multiply_naive(input1, input2);
+        multiply_naive(argv[1], argv[2]);
         stop = high_resolution_clock::now();
         const auto naive_time = duration_cast<microseconds>(stop - start).count();
         
