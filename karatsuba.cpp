@@ -297,20 +297,21 @@ int main(const int argc, const char *argv[]) {
         cerr << "Usage:\n" << argv[0] << " [INPUT1] [INPUT2]\n\nwhich calculates the product of the non-negative integers [INPUT1] and [INPUT2]." << endl;
         return 1;
     }
-    else if(!regex_match(argv[1], regex("^[0-9]+$"))) {
-        cerr << "\"" << argv[1] << "\" must only contain digits 0-9." << endl;
-        return 1;
-    }
-    else if(!regex_match(argv[2], regex("^[0-9]+$"))) {
-        cerr << "\"" << argv[2] << "\" must only contain digits 0-9." << endl;
-        return 1;
-    }
+    //  error checking is very slow
+    // else if(!regex_match(argv[1], regex("^[0-9]+$"))) {
+    //     cerr << "\"" << argv[1] << "\" must only contain digits 0-9." << endl;
+    //     return 1;
+    // }
+    // else if(!regex_match(argv[2], regex("^[0-9]+$"))) {
+    //     cerr << "\"" << argv[2] << "\" must only contain digits 0-9." << endl;
+    //     return 1;
+    // }
     else {
-        const string input1 = noLeadingZeros(argv[1]),
-                     input2 = noLeadingZeros(argv[2]);
+        const string input1 = argv[1],
+                     input2 = argv[2];
             
         auto start = high_resolution_clock::now();
-        karatsuba(input1, input2);
+        const string karatsuba_result = karatsuba(input1, input2);
         auto stop = high_resolution_clock::now();
         const auto karatsuba_time = duration_cast<microseconds>(stop - start).count();
 
@@ -321,7 +322,7 @@ int main(const int argc, const char *argv[]) {
         
         const int displayWidth = max(numToString(karatsuba_time).length(), numToString(naive_time).length());
             
-        cout << input1 + " * " + input2 + " =\n" + karatsuba(input1, input2)
+        cout << input1 + " * " + input2 + " =\n" + karatsuba_result
              << "\n\nKaratsuba computation time: " << setw(displayWidth) << karatsuba_time << " microsecond" << ((karatsuba_time != 1) ? "s" : "")
              << ".\nNaive     computation time: " << setw(displayWidth) << naive_time << " microsecond" << ((naive_time != 1) ? "s" : "") << "." << endl;
         
