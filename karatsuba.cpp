@@ -319,7 +319,7 @@ int main(const int argc, const char *argv[]) {
         
         const int displayWidth = max(numToString(karatsuba_time).length(), numToString(naive_time).length());
             
-        cout << input1 + " * " + input2 + " =\n" + karatsuba_result
+        cout << argv[1] << " * " << argv[2] << " =\n" + karatsuba_result
              << "\n\nKaratsuba computation time: " << setw(displayWidth) << karatsuba_time << " microsecond" << ((karatsuba_time != 1) ? "s" : "")
              << ".\nNaive     computation time: " << setw(displayWidth) << naive_time << " microsecond" << ((naive_time != 1) ? "s" : "") << "." << endl;
         
