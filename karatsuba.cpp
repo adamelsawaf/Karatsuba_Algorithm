@@ -82,7 +82,7 @@ string noLeadingZeros(const string& s) {
 
 
 //  Returns a given string with a given number of "0"s appended to it (representing an integer).
-//  In other words, the "integer" is multiplied by the base that number of times).
+//  In other words, the "integer" is multiplied by the base that number of times). (NOT USED for speed purposes)
 string leftShift(const string& s, const unsigned long long shifts) {
     return s + string(shifts, '0');
 }
@@ -215,8 +215,8 @@ string multiply_naive(const string& a, const string& b) {
            carry           = "0",
            ith_product     = "" ,
            jth_product,
-           aPadded         = noLeadingZeros(a),
-           bPadded         = noLeadingZeros(b);
+           aPadded         = a,
+           bPadded         = b;
 
     padZerosSameLength(aPadded, bPadded);
 
@@ -229,8 +229,8 @@ string multiply_naive(const string& a, const string& b) {
         }
 
         result = add(result,
-                     leftShift(numToString((stringToNum(aPadded.substr(0, 1)) * stringToNum(bPadded.substr(i, 1)))   +   stringToNum(carry))   +   ith_product,
-                               aPadded.length() - 1 - i));
+                     (numToString((stringToNum(aPadded.substr(0, 1)) * stringToNum(bPadded.substr(i, 1)))   +   stringToNum(carry))   +   ith_product)
+                     + string(aPadded.length() - 1 - i, '0'));
         ith_product = "";
         carry       = "0";
     }
@@ -261,16 +261,31 @@ string karatsuba(const string& a, const string& b) {
         }
 
         const unsigned long long n = aPadded.length();
-        const string a1 = aPadded.substr(0, n / 2),  //  left  half of aPadded
-                     a0 = aPadded.substr(n / 2),     //  right half of aPadded
-                     b1 = bPadded.substr(0, n / 2),  //  left  half of bPadded
-                     b0 = bPadded.substr(n / 2),     //  right half of bPadded
+        const string a1 = aPadded.substr(0, n/2),  //  left  half of aPadded
+                     a0 = aPadded.substr(n/2),     //  right half of aPadded
+                     b1 = bPadded.substr(0, n/2),  //  left  half of bPadded
+                     b0 = bPadded.substr(n/2),     //  right half of bPadded
                      c0 = karatsuba(a0, b0),
                 //   c1 = (a1 + a0)(b1 + b0),      (is only referenced once)
                      c2 = karatsuba(a1, b1);
         
         //  a * b = (c2 * B^n) + ((c1 - c2 - c0) * B^(n / 2)) + c0.
-        return add(add(leftShift(c2, n), leftShift(subtract(subtract(karatsuba(add(a1, a0), add(b1, b0)), c2), c0), n / 2)), c0);
+        return add(
+                    add(
+                        c2 + string(n, '0'),
+                        subtract(
+                            subtract(
+                                karatsuba(
+                                    add(a1, a0),
+                                    add(b1, b0)
+                                ),
+                                c2
+                            ),
+                            c0
+                        ) + string(n/2, '0')
+                    ),
+                    c0
+               );
     }
 }
 
