@@ -7,8 +7,8 @@ Bash command to run this program (substitute non-negative integers for [INPUT1] 
 **g++ karatsuba.cpp -o karatsuba && ./karatsuba [INPUT1] [INPUT2] && rm karatsuba**<br/>
 which compiles the cpp file, creates an executable file called "karatsuba" in this directory, runs that executable file, and deletes the executable file when it's finished.
 
-Run the test script **karatsuba_test.sh** by running the following Bash command:
-**bash karatsuba_test.sh**
+Run the test script **karatsuba_test.sh** by running the following Bash command:<br>
+**bash karatsuba_test.sh**<br>
 This test case multiplies a 13500-digit integer with itself, and so the multiplication is likely large enough
 (the maximum of the number of digits of the two numbers being multiplied) for the Karatsuba algorithm to
 calculate the result faster than the naïve algorithm. This is because Karatsuba is asymptotically faster than
