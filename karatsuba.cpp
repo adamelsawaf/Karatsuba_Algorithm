@@ -249,7 +249,7 @@ string multiply_naive(const string& a, const string& b) {
     trade-off of multiplications to many more additions, which are generally faster.
 */
 string karatsuba(const string& a, const string& b) {
-    if(a.length() == 1 && b.length() == 1)
+    if((a.length() == 1) && (b.length() == 1))
         return numToString(stringToNum(a) * stringToNum(b));      //  this is the base case (naive two single-digits multiplication)
     else {
         string aPadded = a,
